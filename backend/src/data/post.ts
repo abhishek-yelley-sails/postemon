@@ -50,7 +50,11 @@ export async function getPost(postId: string) {
 
 export async function editPost(postId: string, data: EditPostData) {
   const oldPost = await getPost(postId);
-  const editedPost = { ...oldPost, ...data, postId: oldPost.postId };
+  const editedPost = {
+    postId: oldPost.postId,
+    title: data.title ? data.title : oldPost.title,
+    description: data.description ? data.description : oldPost.description,
+  };
   const storedData = await readData();
   storedData.posts = [editedPost, ...storedData.posts];
   await writeData(storedData);
