@@ -12,6 +12,7 @@
 # production
 /build
 /backend/dist
+/backend/db/db.json
 
 # misc
 .DS_Store
