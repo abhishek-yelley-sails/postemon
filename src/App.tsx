@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import RootLayout from './pages/RootLayout';
 import Authenticate from './pages/Authenticate';
 import AuthContextProvider from './components/AuthContextProvider';
+import { CookiesProvider } from 'react-cookie';
+import Auth from './pages/Auth';
+import CreatePost from './pages/CreatePost';
 
 const theme = createTheme({
   palette: {
@@ -28,8 +31,18 @@ const router = createBrowserRouter([
             path: "/",
             element: <Home />,
             errorElement: <h1>Error! Can{"'"}t load the home</h1>,
+            children: [
+              {
+                path: "create",
+                element: <CreatePost />
+              }
+            ]
           }
         ],
+      },
+      {
+        path: "auth",
+        element: <Auth />
       }
     ]
   }
@@ -39,12 +52,14 @@ const router = createBrowserRouter([
 export default function App() {
   const queryClient = new QueryClient();
   return (
-    <AuthContextProvider>
+    <CookiesProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
-        </ThemeProvider>
+        <AuthContextProvider>
+          <ThemeProvider theme={theme}>
+            <RouterProvider router={router} />
+          </ThemeProvider>
+        </AuthContextProvider>
       </QueryClientProvider>
-    </AuthContextProvider>
+    </CookiesProvider>
   )
 }

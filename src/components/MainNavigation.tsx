@@ -11,12 +11,33 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { AuthContextType, useAuth } from './AuthContextProvider';
 // import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = ['Posts', 'About'];
+const settings = [
+  {
+    name: 'Profile',
+    handle() { }
+  },
+  {
+    name: 'Account',
+    handle() { }
+  },
+  {
+    name: 'Dashboard',
+    handle() { }
+  },
+  {
+    name: 'Logout',
+    handle(authCtx: AuthContextType | null) {
+      authCtx?.changeToken("");
+    }
+  }
+];
 
 export default function MainNavigation() {
+  const authCtx = useAuth();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -34,6 +55,7 @@ export default function MainNavigation() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  console.log(authCtx);
 
   return (
     <AppBar position="static">
@@ -125,12 +147,19 @@ export default function MainNavigation() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+          {authCtx?.getToken() && <Box sx={{ flexGrow: 0 }}>
+            <div className='flex'>
+              <div className='flex flex-col justify-center pr-2'>
+                <Typography textAlign="center">{authCtx?.email}</Typography>
+              </div>
+              <div>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            </div>
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -148,12 +177,15 @@ export default function MainNavigation() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.name} onClick={() => {
+                  setting.handle(authCtx);
+                  handleCloseUserMenu();
+                }}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box>}
         </Toolbar>
       </Container>
     </AppBar>
