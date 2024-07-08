@@ -1,1 +1,1 @@
-{}
+{"users":[{"email":"abhishekyelley@gmail.com","password":"$2a$12$5ggSAVUTIqnF0AR1/x.OKeBdcgeSGYTKnOjWwW267TntpM.JsmYie","id":"5e4805ce-01b2-402d-b715-6f78fe0f1e25"},{"email":"abhishek@mail.com","password":"$2a$12$/fn0TFnFcm8mS3ttvHJm2euNuyxdKTJBm3flGqTu3kPukT3tom7cm","id":"8b08e28a-8af3-4a4f-a221-f2e67876c4d4"}],"posts":[{"userId":"5e4805ce-01b2-402d-b715-6f78fe0f1e25","title":"First Test","description":"This is my first test post","postId":"5b9346c1-78d6-4e14-a6c9-43c253df387b"}]}

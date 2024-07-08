@@ -35,6 +35,20 @@ export async function getUser(email: string) {
   return user;
 }
 
+export async function getUserById(userId: string) {
+  const storedData = await readData();
+  if (!storedData.users || storedData.users.length === 0) {
+    throw new NotFoundError('Could not find any users.');
+  }
+
+  const user: RetrievedUser = storedData.users.find((item: RetrievedUser) => item.id === userId);
+  if (!user) {
+    throw new NotFoundError('Could not find user for id ' + userId);
+  }
+  const { password, ...userData } = user;
+  return userData;
+}
+
 export async function addUser(data: SignupInfo): Promise<User> {
   const storedData = await readData();
   const userId = v4();
