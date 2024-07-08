@@ -3,8 +3,6 @@ import { Router } from "express";
 import { TokenRequest } from "../util/auth.js";
 import { getAllPosts, createPost, getPost, editPost } from "../data/post.js";
 
-
-
 const router = Router();
 
 router.get("/all", async (req, res, next) => {
