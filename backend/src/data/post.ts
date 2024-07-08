@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { readData, writeData } from "./util.js";
-import { NotFoundError } from "../util/error.js";
+import { NotFoundError, NotAuthError } from "../util/error.js";
 
 export interface MakePostData {
   userId: String,
@@ -48,10 +48,13 @@ export async function getPost(postId: string) {
   return post;
 }
 
-export async function editPost(postId: string, data: EditPostData) {
+export async function editPost(postId: string, data: EditPostData, reqUserId: string) {
   const oldPost = await getPost(postId);
+  if (oldPost.userId !== reqUserId) {
+    throw new NotAuthError("Only original author can edit post");
+  }
   const editedPost = {
-    postId: oldPost.postId,
+    ...oldPost,
     title: data.title ? data.title : oldPost.title,
     description: data.description ? data.description : oldPost.description,
   };

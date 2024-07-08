@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { Request } from 'express';
-import { JwtPayload } from "jsonwebtoken";
 
+import { TokenRequest } from "../util/auth.js";
 import { getAllPosts, createPost, getPost, editPost } from "../data/post.js";
+
+
 
 const router = Router();
 
@@ -15,8 +16,8 @@ router.get("/all", async (req, res, next) => {
   }
 });
 
-router.post("/create", async (req: Request & { token?: JwtPayload }, res) => {
-  const userId = req.token?.userId;
+router.post("/create", async (req, res) => {
+  const userId = (req as TokenRequest).token.userId;
   const title = req.body.title;
   const description = req.body.description;
   const post = await createPost({ userId, title, description });
@@ -34,7 +35,9 @@ router.get("/:postId", async (req, res, next) => {
 
 router.post("/edit/:postId", async (req, res, next) => {
   try {
-    const editedPost = await editPost(req.params.postId, req.body);
+    const postId = req.params.postId;
+    const userId: string = (req as any).token?.userId;
+    const editedPost = await editPost(postId, req.body, userId);
     return res.json(editedPost);
   } catch (error) {
     next(error);

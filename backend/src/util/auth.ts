@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -8,9 +7,17 @@ import { NotAuthError } from "./error.js";
 const { sign, verify } = jwt;
 const { compare } = bcrypt;
 
-export function validateJSONToken(token: string) {
+export interface JwtPayload {
+  userId: string,
+}
+
+export interface TokenRequest extends Request {
+  token: JwtPayload,
+}
+
+export function validateJSONToken(token: string): JwtPayload {
   if (process.env.JWT_KEY)
-    return verify(token, process.env.JWT_KEY);
+    return verify(token, process.env.JWT_KEY) as JwtPayload;
   throw new Error("Missing JWT_KEY!");
 }
 
@@ -18,9 +25,9 @@ export function isValidPassword(password: string, storedPassword: string) {
   return compare(password, storedPassword);
 }
 
-export function createJSONToken(email: string) {
+export function createJSONToken(userId: string) {
   if (process.env.JWT_KEY)
-    return sign({ email }, process.env.JWT_KEY, { expiresIn: '1h' });
+    return sign({ userId }, process.env.JWT_KEY, { expiresIn: '1h' });
   throw new Error("Missing JWT_KEY!");
 }
 
@@ -28,7 +35,7 @@ export function createJSONToken(email: string) {
 //   return compare(password, storedPassword);
 // }
 
-export function checkAuthMiddleware(req: Request & { token?: string | JwtPayload }, res: Response, next: NextFunction) {
+export function checkAuthMiddleware(req: Request, res: Response, next: NextFunction) {
   if (req.method === 'OPTIONS') {
     return next();
   }
@@ -45,7 +52,7 @@ export function checkAuthMiddleware(req: Request & { token?: string | JwtPayload
   const authToken = authFragments[1];
   try {
     const validatedToken = validateJSONToken(authToken);
-    req.token = validatedToken;
+    (req as TokenRequest).token = validatedToken;
   } catch (error) {
     console.log('NOT AUTH. TOKEN INVALID.');
     return next(new NotAuthError('Not authenticated.'));
