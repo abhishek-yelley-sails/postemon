@@ -28,7 +28,7 @@ app.use("/users", usersRouter);
 app.use((error: Error & { message: string, status: number }, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;
   const message = error.message || 'Something went wrong.';
-  res.status(status).json({ message: message });
+  res.status(status).json({ error: true, message: message });
 });
 
 const PORT = process.env.PORT || 8080;

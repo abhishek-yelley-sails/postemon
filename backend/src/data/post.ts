@@ -1,11 +1,12 @@
 import { v4 } from "uuid";
 import { readData, writeData } from "./util.js";
-import { NotFoundError, NotAuthError } from "../util/error.js";
+import { NotFoundError, NotAuthError, MissingData } from "../util/error.js";
 
 export interface MakePostData {
-  userId: String,
-  title: String,
-  description: String,
+  userId: string,
+  title: string,
+  description: string,
+  time: string,
 }
 export interface Post extends MakePostData {
   postId: string
@@ -17,6 +18,9 @@ export interface EditPostData {
 }
 
 export async function createPost(data: MakePostData) {
+  if (!data.title) {
+    throw new MissingData("Title is required");
+  }
   const storedData = await readData();
   const postId = v4();
   if (!storedData.posts) {
@@ -59,6 +63,10 @@ export async function editPost(postId: string, data: EditPostData, reqUserId: st
     description: data.description ? data.description : oldPost.description,
   };
   const storedData = await readData();
+  if (!storedData.posts) {
+    storedData.posts = [];
+  }
+  storedData.posts = storedData.posts.filter((item: Post) => item.postId !== postId);
   storedData.posts = [editedPost, ...storedData.posts];
   await writeData(storedData);
   return editedPost;

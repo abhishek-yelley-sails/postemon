@@ -16,4 +16,13 @@ class NotAuthError {
   }
 }
 
-export { NotFoundError, NotAuthError };
+class MissingData {
+  message: string;
+  status: number;
+  constructor(message: string) {
+    this.message = message;
+    this.status = 422;
+  }
+}
+
+export { NotFoundError, NotAuthError, MissingData };

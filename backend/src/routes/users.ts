@@ -7,7 +7,17 @@ const router = Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const user = await getUserById((req as TokenRequest).token.userId);
+    const userId = (req as TokenRequest).token.userId;
+    return res.redirect("./" + userId);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/:userId", async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const user = await getUserById(userId);
     return res.json(user);
   } catch (error) {
     next(error);
