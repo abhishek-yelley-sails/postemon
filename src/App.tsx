@@ -9,6 +9,7 @@ import AuthContextProvider from './components/AuthContextProvider';
 import { CookiesProvider } from 'react-cookie';
 import Auth from './pages/Auth';
 import CreatePost from './pages/CreatePost';
+import EditPost from './pages/EditPost';
 
 const theme = createTheme({
   palette: {
@@ -34,6 +35,14 @@ const router = createBrowserRouter([
             children: [
               {
                 path: "create",
+                element: <CreatePost />
+              },
+              {
+                path: "edit/:postId",
+                element: <EditPost />
+              },
+              {
+                path: "delete/:postId",
                 element: <CreatePost />
               }
             ]

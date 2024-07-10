@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 export default function Authenticate() {
   const authCtx = useAuth();
 
-  if (authCtx?.getToken()) {
+  if (authCtx?.getToken() && authCtx?.isLoggedIn) {
     return (
       <Outlet />
     );

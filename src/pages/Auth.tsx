@@ -1,17 +1,17 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import axios, { AxiosResponse } from 'axios';
 import { useAuth } from '../components/AuthContextProvider';
 
@@ -46,9 +46,14 @@ export default function Auth() {
       authCtx?.changeId(data?.data.user.id);
       authCtx?.changeEmail(data?.data.user.email);
       authCtx?.changeToken(data?.data.token);
+      authCtx?.changeLoggedIn(true);
       navigate('/');
     },
   });
+  useEffect(() => {
+    if (authCtx?.isLoggedIn)
+      navigate('/');
+  }, [authCtx?.isLoggedIn, navigate]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
